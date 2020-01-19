@@ -8,7 +8,7 @@ var jumpTimer = 0; // The initial value of the timer
 
 var allObjs = [];
 
-var numofps;
+var numofps = 0;
 
 //var p1;
 //var p2;
@@ -46,8 +46,8 @@ var GameState = {
 
         p1 = new Player(game, 250, 900, 'p1', 0, "left");
         p2 = new Player(game, 0, 900, 'p2', 1, "left");
-        p3 = new Player(game,500,900, 'p3',2, "left");
-        p4 = new Player(game,800,800, 'p4', 3, "left");
+       // p3 = new Player(game,500,900, 'p3',2, "left");
+        //p4 = new Player(game,800,800, 'p4', 3, "left");
 
        
 
@@ -58,8 +58,8 @@ var GameState = {
 
         p1.updatePLS();
         p2.updatePLS();
-        p3.updatePLS();
-        p4.updatePLS();
+        //p3.updatePLS();
+        //p4.updatePLS();
 
 
     }
@@ -75,7 +75,9 @@ class Player extends Phaser.Sprite {
         this.x = x;
         this.y = y;
         this.facing = facing;
+        this.frame = frame;
 
+        //game.physics.arcade.checkCollision.down = false;
         //game.physics.startSystem(Phaser.Physics.ARCADE);
         //game.add.sprite(this);
 
@@ -95,80 +97,171 @@ class Player extends Phaser.Sprite {
         // Set the amount of gravity to apply to the physics body of the 'player' sprite
         this.sprite.body.gravity.y = 200;
 
-        var numofps = numofps +1;
+        this.sprite.body.onCollide = new Phaser.Signal();
+        //var numofps = numofps +1;
         allObjs.push(this);
+        //console.log(allObjs.length);
 
     }
+
+    
 
     updatePLS() {
 
 
         this.sprite.body.velocity.x = 0;
-        // Check if the left arrow key is being pressed
 
-        //for()
+        for (var i= 0; i < allObjs.length; i++){
+            if(allObjs[i] !== this){
+                //console.log(Math.abs(this.sprite.position.x - allObjs[i].sprite.position.x));
 
-
-        if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
-        {
-            // Set the 'player' sprite's x velocity to a negative number:
-            //  have it move left on the screen.
-            this.sprite.body.velocity.x = -hozMove;
-            this.sprite.scale.setTo(-1,1);
-            if (this.sprite.body.onFloor() && !game.input.keyboard.isDown(Phaser.Keyboard.J)) {
-                this.sprite.animations.play('walk');
-            }
-            else if (game.input.keyboard.isDown(Phaser.Keyboard.J)){
-                this.sprite.animations.play('swing');
-                if (this.sprite.body.onFloor()) {
-                    this.sprite.body.velocity.x = 0;
+                if(Math.abs(this.sprite.position.x - allObjs[i].sprite.position.x) < 70 && Math.abs(this.sprite.position.y - allObjs[i].sprite.position.y) < 70){
+                    console.log("x");
                 }
+        
             }
-            else {
+
+        }
+
+        if(this.frame === 0){
+
+            if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
+            {
+                // Set the 'player' sprite's x velocity to a negative number:
+                //  have it move left on the screen.
+                this.sprite.body.velocity.x = -hozMove;
+                this.sprite.scale.setTo(-1,1);
+                if (this.sprite.body.onFloor() && !game.input.keyboard.isDown(Phaser.Keyboard.J)) {
+                    this.sprite.animations.play('walk');
+                }
+                else if (game.input.keyboard.isDown(Phaser.Keyboard.J)){
+                    this.sprite.animations.play('swing');
+                    if (this.sprite.body.onFloor()) {
+                        this.sprite.body.velocity.x = 0;
+                    }
+                }
+                else {
+                    this.sprite.animations.play('jump');
+                }
+
+            }
+
+            else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
+            {
+                 //console.log(this.sprite, this.x,  this.y);
+
+                 //console.log(this.sprite.position.x);
+                // Set the 'player' sprite's x velocity to a positive number:
+                //  have it move right on the screen.
+                this.sprite.body.velocity.x = hozMove;
+                this.sprite.scale.setTo(1,1);
+                 if (this.sprite.body.onFloor() && !game.input.keyboard.isDown(Phaser.Keyboard.J)) {
+                    this.sprite.animations.play('walk');
+                }
+                else if (game.input.keyboard.isDown(Phaser.Keyboard.J)){
+                    this.sprite.animations.play('swing');
+                    if (this.sprite.body.onFloor()) {
+                        this.sprite.body.velocity.x = 0;
+                    }
+                }
+                else {
+                    this.sprite.animations.play('jump');
+                }
+            } 
+            else if (game.input.keyboard.isDown(Phaser.Keyboard.J)) {
+                this.sprite.animations.play('swing');
+            }
+            else if (this.sprite.body.velocity.x == 0 && this.sprite.body.velocity.y == 0) 
+            {
+                this.sprite.animations.play('idle');
+            }
+
+
+
+            if (game.input.keyboard.isDown(Phaser.Keyboard.UP) && this.sprite.body.onFloor() && game.time.now > jumpTimer)
+            {
+                // Set the 'player' sprite's y velocity to a negative number
+                //  (vertMove is -90) and thus have it move up on the screen.
+                this.sprite.body.velocity.y = vertMove;
+                // Add 650 and the current time together and set that value to 'jumpTimer'
+                // (The 'jumpTimer' is how long in milliseconds between jumps.
+                //   Here, that is 650 ms.)
+                jumpTimer = game.time.now + 650;
+
                 this.sprite.animations.play('jump');
             }
         }
+        else{
 
-        else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
-        {
-            // Set the 'player' sprite's x velocity to a positive number:
-            //  have it move right on the screen.
-            this.sprite.body.velocity.x = hozMove;
-            this.sprite.scale.setTo(1,1);
-             if (this.sprite.body.onFloor() && !game.input.keyboard.isDown(Phaser.Keyboard.J)) {
-                this.sprite.animations.play('walk');
-            }
-            else if (game.input.keyboard.isDown(Phaser.Keyboard.J)){
-                this.sprite.animations.play('swing');
-                if (this.sprite.body.onFloor()) {
-                    this.sprite.body.velocity.x = 0;
+            if (game.input.keyboard.isDown(Phaser.Keyboard.A))
+            {
+                // Set the 'player' sprite's x velocity to a negative number:
+                //  have it move left on the screen.
+                this.sprite.body.velocity.x = -hozMove;
+                this.sprite.scale.setTo(-1,1);
+                if (this.sprite.body.onFloor() && !game.input.keyboard.isDown(Phaser.Keyboard.F)) {
+                    this.sprite.animations.play('walk');
                 }
+                else if (game.input.keyboard.isDown(Phaser.Keyboard.F)){
+                    this.sprite.animations.play('swing');
+                    if (this.sprite.body.onFloor()) {
+                        this.sprite.body.velocity.x = 0;
+                    }
+                }
+                else {
+                    this.sprite.animations.play('jump');
+                }
+
             }
-            else {
+
+            else if (game.input.keyboard.isDown(Phaser.Keyboard.D))
+            {
+                 //console.log(this.sprite, this.x,  this.y);
+
+                 //console.log(this.sprite.position.x);
+                // Set the 'player' sprite's x velocity to a positive number:
+                //  have it move right on the screen.
+                this.sprite.body.velocity.x = hozMove;
+                this.sprite.scale.setTo(1,1);
+                 if (this.sprite.body.onFloor() && !game.input.keyboard.isDown(Phaser.Keyboard.F)) {
+                    this.sprite.animations.play('walk');
+                }
+                else if (game.input.keyboard.isDown(Phaser.Keyboard.F)){
+                    this.sprite.animations.play('swing');
+                    if (this.sprite.body.onFloor()) {
+                        this.sprite.body.velocity.x = 0;
+                    }
+                }
+                else {
+                    this.sprite.animations.play('jump');
+                }
+            } 
+            else if (game.input.keyboard.isDown(Phaser.Keyboard.F)) {
+                this.sprite.animations.play('swing');
+            }
+            else if (this.sprite.body.velocity.x == 0 && this.sprite.body.velocity.y == 0) 
+            {
+                this.sprite.animations.play('idle');
+            }
+
+
+
+            if (game.input.keyboard.isDown(Phaser.Keyboard.W) && this.sprite.body.onFloor() && game.time.now > jumpTimer)
+            {
+                // Set the 'player' sprite's y velocity to a negative number
+                //  (vertMove is -90) and thus have it move up on the screen.
+                this.sprite.body.velocity.y = vertMove;
+                // Add 650 and the current time together and set that value to 'jumpTimer'
+                // (The 'jumpTimer' is how long in milliseconds between jumps.
+                //   Here, that is 650 ms.)
+                jumpTimer = game.time.now + 650;
+
                 this.sprite.animations.play('jump');
             }
-        } 
-        else if (game.input.keyboard.isDown(Phaser.Keyboard.J)) {
-            this.sprite.animations.play('swing');
-        }
-        else if (this.sprite.body.velocity.x == 0 && this.sprite.body.velocity.y == 0) 
-        {
-            this.sprite.animations.play('idle');
+
         }
 
 
 
-        if (game.input.keyboard.isDown(Phaser.Keyboard.UP) && this.sprite.body.onFloor() && game.time.now > jumpTimer)
-        {
-            // Set the 'player' sprite's y velocity to a negative number
-            //  (vertMove is -90) and thus have it move up on the screen.
-            this.sprite.body.velocity.y = vertMove;
-            // Add 650 and the current time together and set that value to 'jumpTimer'
-            // (The 'jumpTimer' is how long in milliseconds between jumps.
-            //   Here, that is 650 ms.)
-            jumpTimer = game.time.now + 650;
-
-            this.sprite.animations.play('jump');
-        }
     }
 }
