@@ -15,22 +15,29 @@
 
     function preload() {
         // Load the spritesheet 'character.png', telling Phaser each frame is 40x64
-        game.load.spritesheet('im1', 'assets/img.png', 225, 225);
+        game.load.spritesheet('p1', 'assets/p1.png', 160/6, 120,6);
+        game.load.spritesheet('p2', 'assets/p2.png', 160/6, 120,6);
         game.load.image('background', 'assets/background.png');
 
 
     }
 
-    var player; // The player-controller sprite
+    var player1; // The player-controller sprite
+    var player2;
+    var player3;
+    var player4;
+
     var facing = "left"; // Which direction the character is facing (default is 'left')
+    //var facing2 = 
     var hozMove = 160; // The amount to move horizontally
-    var vertMove = -180; // The amount to move vertically (when 'jumping')
+    var vertMove = -210; // The amount to move vertically (when 'jumping')
     var jumpTimer = 0; // The initial value of the timer
 
     function create() {
 
         // Make the background color of the game's stage be white (#FFFFFF)
         game.stage.backgroundColor = '#D3D3D3';
+
 
         // Start the physics system ARCADE
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -39,8 +46,11 @@
 
         // Create and add a sprite to the game at the position (2*48 x 6 *48)
         // and using, in this case, the spritesheet 'character'
-        player = game.add.sprite(500, 500, 'im1');
-        player.scale.setTo(0.5,0.5);
+        player1 = game.add.sprite(500, 500, 'p1');
+        player2 = game.add.sprite(0, 0, 'p2');
+        //player2 = game.add.sprite(500,500,'')
+        
+        //player1.scale.setTo(0.5,0.5);
 
         // By default, sprites do not have a physics 'body'
         // Before we can adjust its physics properties,
@@ -49,27 +59,32 @@
         //  physics system to use too. However, since we
         //  started the Arcade system already, it will
         //  default to that.)
-        game.physics.enable(player);
+        game.physics.enable(player1);
+
+        game.physics.enable(player2);
         
         // We want the player to collide with the bounds of the world
-        player.body.collideWorldBounds = true;
+        player1.body.collideWorldBounds = true;
+        player2.body.collideWorldBounds = true;
 
         // Set the amount of gravity to apply to the physics body of the 'player' sprite
-        player.body.gravity.y =100;
+        player1.body.gravity.y =200;
+        player2.body.gravity.y =200;
 
     }
 
     function update() {
 
         // Reset the x (horizontal) velocity
-        player.body.velocity.x = 0;
+        player1.body.velocity.x = 0;
+        player2.body.velocity.x = 0;
 
         // Check if the left arrow key is being pressed
         if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
         {
             // Set the 'player' sprite's x velocity to a negative number:
             //  have it move left on the screen.
-            player.body.velocity.x = -hozMove;
+            player1.body.velocity.x = -hozMove;
 
             // Check if 'facing' is not "left"
             if (facing !== "left")
@@ -78,12 +93,41 @@
                 facing = "left";
             }
         }
+
         // Check if the right arrow key is being pressed
         else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
         {
             // Set the 'player' sprite's x velocity to a positive number:
             //  have it move right on the screen.
-            player.body.velocity.x = hozMove;
+            player1.body.velocity.x = hozMove;
+
+
+            // Check if 'facing' is not "right"
+            if (facing !== "right")
+            {
+                // Set 'facing' to "right"
+                facing = "right";
+            }
+        }
+        if (game.input.keyboard.isDown(Phaser.Keyboard.A))
+        {
+            // Set the 'player' sprite's x velocity to a negative number:
+            //  have it move left on the screen.
+            player2.body.velocity.x = -hozMove;
+
+            // Check if 'facing' is not "left"
+            if (facing !== "left")
+            {
+                // Set 'facing' to "left"
+                facing = "left";
+            }
+        }
+        else if(game.input.keyboard.isDown(Phaser.Keyboard.D))
+        {
+            // Set the 'player' sprite's x velocity to a positive number:
+            //  have it move right on the screen.
+            player2.body.velocity.x = hozMove;
+
 
             // Check if 'facing' is not "right"
             if (facing !== "right")
@@ -99,28 +143,27 @@
         //  (Here, we need to make sure the player cannot jump while alreay in the air
         //   AND that jumping takes place while the sprite is colliding with
         //   a tile in order to jump off it.)
-        if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && player.body.onFloor() && game.time.now > jumpTimer)
+        if (game.input.keyboard.isDown(Phaser.Keyboard.UP) && player1.body.onFloor() && game.time.now > jumpTimer)
         {
             // Set the 'player' sprite's y velocity to a negative number
             //  (vertMove is -90) and thus have it move up on the screen.
-            player.body.velocity.y = vertMove;
+            player1.body.velocity.y = vertMove;
             // Add 650 and the current time together and set that value to 'jumpTimer'
             // (The 'jumpTimer' is how long in milliseconds between jumps.
             //   Here, that is 650 ms.)
             jumpTimer = game.time.now + 650;
         }
 
-        // // Check if 'facing' is "left"
-        // if (facing === "left") {
-        //     // Set the 'player' to the second (1) frame
-        //     //  ('facing' is "left")
-        //     player.frame = 1;
-        // } else {
-        //     // Set the 'player' to the first (0) frame
-        //     //  ('facing' is "right").
-        //     player.frame = 0;
-        // }
-
+        if (game.input.keyboard.isDown(Phaser.Keyboard.W) && player2.body.onFloor() && game.time.now > jumpTimer)
+        {
+            // Set the 'player' sprite's y velocity to a negative number
+            //  (vertMove is -90) and thus have it move up on the screen.
+            player2.body.velocity.y = vertMove;
+            // Add 650 and the current time together and set that value to 'jumpTimer'
+            // (The 'jumpTimer' is how long in milliseconds between jumps.
+            //   Here, that is 650 ms.)
+            jumpTimer = game.time.now + 650;
+        }
     }
 
 }(Phaser));
