@@ -14,6 +14,8 @@ var GameState = {
         game.load.image('background', 'assets/background.png');
         game.load.spritesheet('p1', 'assets/p1_large.png', 140, 120,6);
         game.load.spritesheet('p2', 'assets/p2_large.png', 140, 120,6);
+        game.load.spritesheet('p3', 'assets/p3_large.png', 140, 120,6);
+        game.load.spritesheet('p4', 'assets/p4_large.png', 140, 120,6);
         
     },
     create: function() {
@@ -25,16 +27,18 @@ var GameState = {
 
         game.add.image(0,0,'background');
 
-        var facing1 = "left";
-        var facing2 = "left";
+        p1 = new Player(game, 250, 500, 'p1', 0, "left");
+        p2 = new Player(game, 0, 0, 'p2', 0, "left");
+        p3 = new Player(game,500,500, 'p3',0, "left");
+        p4 = new Player(game,800,800, 'p4', 0, "left");
 
-        p1 = new Player(game, 250, 500, 'p1', 0, facing1);
-        p2 = new Player(game, 0, 0, 'p2', 0, facing2);
     },
     // the update function is basically an infinite loop
     update: function() {
         p1.updatePLS();
         p2.updatePLS();
+        p3.updatePLS();
+        p4.updatePLS();
     }
 };
 
