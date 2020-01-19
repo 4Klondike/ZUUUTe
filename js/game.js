@@ -1,7 +1,7 @@
  (function (Phaser) {
 
     var game = new Phaser.Game(
-            1000, 500, // The width and height of the game in pixels
+            1000, 600, // The width and height of the game in pixels
             Phaser.AUTO, // The type of graphic rendering to use 
             // (AUTO tells Phaser to detect if WebGL is supported.
             //  If not, it will default to Canvas.)
@@ -16,6 +16,7 @@
     function preload() {
         // Load the spritesheet 'character.png', telling Phaser each frame is 40x64
         game.load.spritesheet('im1', 'assets/img.png', 225, 225);
+        game.load.image('background', 'assets/background.png');
 
 
     }
@@ -33,6 +34,8 @@
 
         // Start the physics system ARCADE
         game.physics.startSystem(Phaser.Physics.ARCADE);
+
+        game.add.image(0,0,'background');
 
         // Create and add a sprite to the game at the position (2*48 x 6 *48)
         // and using, in this case, the spritesheet 'character'
