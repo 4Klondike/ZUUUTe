@@ -1,21 +1,19 @@
 var game = new Phaser.Game(1000, 600, Phaser.AUTO);
 
-var player1; // The player-controller sprite
-var player2;
-var player3;
-var player4;
-
 var facing = "left"; // Which direction the character is facing (default is 'left')
 //var facing2 = 
 var hozMove = 160; // The amount to move horizontally
 var vertMove = -210; // The amount to move vertically (when 'jumping')
 var jumpTimer = 0; // The initial value of the timer
 
+var p1;
+var p2;
+
 var GameState = {
     preload: function() {
         // Load the spritesheet 'character.png', telling Phaser each frame is 40x64
-        game.load.spritesheet('p1', 'assets/p1.png', 160/6, 120,6);
-        game.load.spritesheet('p2', 'assets/p2.png', 160/6, 120,6);
+        game.load.spritesheet('p1', 'assets/p1.png', 27, 24,6);
+        game.load.spritesheet('p2', 'assets/p2.png', 27, 24,6);
         game.load.image('background', 'assets/background.png');
     },
     create: function() {
@@ -23,33 +21,43 @@ var GameState = {
         game.stage.backgroundColor = '#D3D3D3';
 
         // Start the physics system ARCADE
-        game.physics.startSystem(Phaser.Physics.ARCADE);
+        //game.physics.startSystem(Phaser.Physics.ARCADE);
 
         game.add.image(0,0,'background');
 
         p1 = new Player(game, 500, 500, 'p1', 0);
-        p2 = new Player(game, 600, 500, 'p2', 0);
-    }
+        p2 = new Player(game, 0, 0, 'p2', 0);
+    },
     update: function() {
         p1.updatePLS();
         p2.updatePLS();
     }
 };
 
-game.state.add("GameState", GameState);
-game.state.start("GameState");
+game.state.add('GameState', GameState);
+game.state.start('GameState');
 
 class Player extends Phaser.Sprite {
     constructor(game, x, y, sprite, frame) {
+
         super(game, x, y, sprite, frame);
-        game.add.sprite(this);
+
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+        //game.add.sprite(this);
+
+        this.sprite = game.add.sprite(x, y, sprite);
+
+
         game.physics.enable(this);
         // We want the player to collide with the bounds of the world
         this.body.collideWorldBounds = true;
+
         // Set the amount of gravity to apply to the physics body of the 'player' sprite
         this.body.gravity.y =200;
     }
+
     updatePLS() {
+
         this.body.velocity.x = 200;
         // Check if the left arrow key is being pressed
         if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
