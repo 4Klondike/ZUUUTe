@@ -65,13 +65,14 @@ var GameState = {
     // the update function is basically an infinite loop
     update: function() {
 
-        healthbar.scale.setTo(4,10);
-        healthbar2.scale.setTo(4,10)
+        
 
         p1.updatePLS();
         p2.updatePLS();
         //p3.updatePLS();
         //p4.updatePLS();
+        healthbar.scale.setTo(p1.hlth/10,10)
+        healthbar2.scale.setTo(p2.hlth/10,10)
 
 
     }
@@ -128,16 +129,17 @@ class Player extends Phaser.Sprite {
         if(this.frame === 0){
             //if(game.input.keyboard.isDown(Phaser.Keyboard.J)){}
 
-            for (var i= 0; i < allObjs.length; i++){
-            if(allObjs[i] !== this){
-                //console.log(Math.abs(this.sprite.position.x - allObjs[i].sprite.position.x));
-
-                    if( game.input.keyboard.isDown(Phaser.Keyboard.J) && Math.abs(this.sprite.position.x - allObjs[i].sprite.position.x) < 70 && Math.abs(this.sprite.position.y - allObjs[i].sprite.position.y) < 70){
-                        console.log("x");
-                        this.hlth -= 10;
+            if(game.input.keyboard.isDown(Phaser.Keyboard.J)){
+                for (var i= 0; i < allObjs.length; i++){
+                    if(allObjs[i] != this){
+                    //console.log(Math.abs(this.sprite.position.x - allObjs[i].sprite.position.x));
+                    if((Math.abs(this.sprite.position.x - allObjs[i].sprite.position.x) < 70) && (Math.abs(this.sprite.position.y - allObjs[i].sprite.position.y) < 70)){
+                        console.log("p1 attacks");
+                        allObjs[i].hlth -= 1;
+                        }
                     }
-                }
             }
+        }
    
 
             if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
@@ -216,13 +218,15 @@ class Player extends Phaser.Sprite {
         }
         else{
 
-            for (var i= 0; i < allObjs.length; i++){
-            if(allObjs[i] !== this){
-                //console.log(Math.abs(this.sprite.position.x - allObjs[i].sprite.position.x));
+            if (game.input.keyboard.isDown(Phaser.Keyboard.F)) {
+                for (var i= 0; i < allObjs.length; i++){
+                    if(allObjs[i] != this){
+                    //console.log(Math.abs(this.sprite.position.x - allObjs[i].sprite.position.x));
 
-                    if( game.input.keyboard.isDown(Phaser.Keyboard.J) && Math.abs(this.sprite.position.x - allObjs[i].sprite.position.x) < 70 && Math.abs(this.sprite.position.y - allObjs[i].sprite.position.y) < 70){
-                        console.log("x");
-                        this.hlth -= 10;
+                    if(Math.abs(this.sprite.position.x - allObjs[i].sprite.position.x) < 70 && Math.abs(this.sprite.position.y - allObjs[i].sprite.position.y) < 70){
+                        console.log("p2 attacks");
+                        allObjs[i].hlth -= 1;
+                        }
                     }
                 }
             }
