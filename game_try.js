@@ -12,9 +12,8 @@ var p2;
 var GameState = {
     preload: function() {
         game.load.image('background', 'assets/background.png');
-        // Load the spritesheet 'character.png', telling Phaser each frame is 40x64
-        game.load.spritesheet('p1', 'assets/p1.png', 27, 24,6);
-        game.load.spritesheet('p2', 'assets/p2.png', 27, 24,6);
+        game.load.spritesheet('p1', 'assets/p1_large.png', 140, 120,6);
+        game.load.spritesheet('p2', 'assets/p2_large.png', 140, 120,6);
         
     },
     create: function() {
@@ -56,6 +55,11 @@ class Player extends Phaser.Sprite {
         this.sprite = game.add.sprite(x, y, sprite);
         //game.add.sprite(x, y, sprite);
 
+        this.sprite.animations.add('idle',[1,5],1,true);
+        this.sprite.animations.add('walk',[0,1,2,1],7,true);
+        this.sprite.animations.add('swing',[3,4],4,false);
+        this.sprite.animations.add('jump',[3],1,true);
+
 
         game.physics.enable(this.sprite);
         // We want the player to collide with the bounds of the world
@@ -70,45 +74,34 @@ class Player extends Phaser.Sprite {
 
         this.sprite.body.velocity.x = 0;
         // Check if the left arrow key is being pressed
+
         if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
         {
             // Set the 'player' sprite's x velocity to a negative number:
             //  have it move left on the screen.
             this.sprite.body.velocity.x = -hozMove;
-
-            console.log("it works");
-
-            // Check if 'facing' is not "left"
-            if (this.facing !== "left")
-            {
-                // Set 'facing' to "left"
-                this.facing = "left";
-            }
+            this.sprite.scale.setTo(-1,1);
+            this.sprite.animations.play('walk');
         }
 
-        // Check if the right arrow key is being pressed
         else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
         {
             // Set the 'player' sprite's x velocity to a positive number:
             //  have it move right on the screen.
             this.sprite.body.velocity.x = hozMove;
-
-
-            // Check if 'facing' is not "right"
-            if (this.facing !== "right")
-            {
-                // Set 'facing' to "right"
-                this.facing = "right";
-            }
+            this.sprite.scale.setTo(1,1);
+            this.sprite.animations.play('walk');
+        } 
+        else if (game.input.keyboard.isDown(Phaser.Keyboard.J)) {
+            this.sprite.animations.play('swing');
         }
-    
+        else if (this.sprite.body.velocity.x == 0 && this.sprite.body.velocity.y == 0) 
+        {
+            this.sprite.animations.play('idle');
+        }
 
-        // Check if the jumpButton (SPACEBAR) is down AND
-        //  if the 'player' physics body is onFloor (touching a tile) AND
-        //  if the current game.time is greater than the value of 'jumpTimer'
-        //  (Here, we need to make sure the player cannot jump while alreay in the air
-        //   AND that jumping takes place while the sprite is colliding with
-        //   a tile in order to jump off it.)
+
+
         if (game.input.keyboard.isDown(Phaser.Keyboard.UP) && this.sprite.body.onFloor() && game.time.now > jumpTimer)
         {
             // Set the 'player' sprite's y velocity to a negative number
