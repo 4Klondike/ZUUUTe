@@ -27,7 +27,7 @@ var GameState = {
         game.load.image('healthbar', 'assets/health_full.png');
         game.load.image('healthempty', 'assets/health_empty.png');
 
-        game.load.image('gnd','assets/platform_large.png');
+        
         
     },
     create: function() {
@@ -39,7 +39,7 @@ var GameState = {
 
         game.add.image(0,0,'background');
 
-        game.add.image(50,370, 'gnd');
+        
 
         healthempty = game.add.image(85,30, 'healthempty')
         healthempty.scale.setTo(10,10)
