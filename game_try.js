@@ -44,8 +44,8 @@ var GameState = {
 
 
 
-        p1 = new Player(game, 250, 900, 'p1', 0, "left");
-        p2 = new Player(game, 0, 900, 'p2', 1, "left");
+        p1 = new Player(game, 250, 900, 'p1', 0, "left",100);
+        p2 = new Player(game, 0, 900, 'p2', 1, "left",100);
        // p3 = new Player(game,500,900, 'p3',2, "left");
         //p4 = new Player(game,800,800, 'p4', 3, "left");
 
@@ -69,13 +69,14 @@ game.state.add('GameState', GameState);
 game.state.start('GameState');
 
 class Player extends Phaser.Sprite {
-    constructor(game, x, y, sprite, frame, facing) {
+    constructor(game, x, y, sprite, frame, facing,hlth) {
 
         super(game, x, y, sprite, frame);
         this.x = x;
         this.y = y;
         this.facing = facing;
         this.frame = frame;
+        this.hlth = hlth;
 
         //game.physics.arcade.checkCollision.down = false;
         //game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -111,19 +112,20 @@ class Player extends Phaser.Sprite {
 
         this.sprite.body.velocity.x = 0;
 
-        for (var i= 0; i < allObjs.length; i++){
+        if(this.frame === 0){
+            //if(game.input.keyboard.isDown(Phaser.Keyboard.J)){}
+
+            for (var i= 0; i < allObjs.length; i++){
             if(allObjs[i] !== this){
                 //console.log(Math.abs(this.sprite.position.x - allObjs[i].sprite.position.x));
 
-                if(Math.abs(this.sprite.position.x - allObjs[i].sprite.position.x) < 70 && Math.abs(this.sprite.position.y - allObjs[i].sprite.position.y) < 70){
-                    console.log("x");
+                    if( game.input.keyboard.isDown(Phaser.Keyboard.J) && Math.abs(this.sprite.position.x - allObjs[i].sprite.position.x) < 70 && Math.abs(this.sprite.position.y - allObjs[i].sprite.position.y) < 70){
+                        console.log("x");
+                        this.hlth -= 10;
+                    }
                 }
-        
             }
-
-        }
-
-        if(this.frame === 0){
+   
 
             if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
             {
@@ -192,6 +194,18 @@ class Player extends Phaser.Sprite {
             }
         }
         else{
+
+            for (var i= 0; i < allObjs.length; i++){
+            if(allObjs[i] !== this){
+                //console.log(Math.abs(this.sprite.position.x - allObjs[i].sprite.position.x));
+
+                    if( game.input.keyboard.isDown(Phaser.Keyboard.J) && Math.abs(this.sprite.position.x - allObjs[i].sprite.position.x) < 70 && Math.abs(this.sprite.position.y - allObjs[i].sprite.position.y) < 70){
+                        console.log("x");
+                        this.hlth -= 10;
+                    }
+                }
+            }
+            
 
             if (game.input.keyboard.isDown(Phaser.Keyboard.A))
             {
