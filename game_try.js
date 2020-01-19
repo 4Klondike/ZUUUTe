@@ -12,6 +12,8 @@ var numofps = 0;
 
 //var p1;
 //var p2;
+var text1;
+var text2;
 
 var plat;
 
@@ -54,8 +56,8 @@ var GameState = {
 
 
 
-        p1 = new Player(game, 250, 900, 'p1', 0, "left",100);
-        p2 = new Player(game, 0, 900, 'p2', 1, "left",100);
+        p1 = new Player(game, 0, 900, 'p1', 0, "left",100,"noah");
+        p2 = new Player(game,825,900, 'p2', 1, "left",100,"klondike");
        // p3 = new Player(game,500,900, 'p3',2, "left");
         //p4 = new Player(game,800,800, 'p4', 3, "left");
 
@@ -73,6 +75,25 @@ var GameState = {
         //p4.updatePLS();
         healthbar.scale.setTo(p1.hlth/10,10)
         healthbar2.scale.setTo(p2.hlth/10,10)
+        if (p1.hlth<=0) {
+            healthbar.scale.setTo(0,10);
+            text1 = game.add.text(200, 200, "Game Over! "+ p1.name + " died! " + p2.name + " wins!", {
+                font: "30px Arial",
+                fill: "#ff0044",
+                align: "center"
+            })
+
+
+        }
+        if (p2.hlth<=0) {
+            healthbar2.scale.setTo(0,10);
+            text1 = game.add.text(200, 200, "Game Over! "+ p2.name + " died! " + p1.name + " wins!", {
+                font: "30px Arial",
+                fill: "#ff0044",
+                align: "center"
+            })
+        }
+
 
 
     }
@@ -82,9 +103,10 @@ game.state.add('GameState', GameState);
 game.state.start('GameState');
 
 class Player extends Phaser.Sprite {
-    constructor(game, x, y, sprite, frame, facing,hlth) {
+    constructor(game, x, y, sprite, frame, facing,hlth,name) {
 
         super(game, x, y, sprite, frame);
+        this.name = name;
         this.x = x;
         this.y = y;
         this.facing = facing;
@@ -215,6 +237,9 @@ class Player extends Phaser.Sprite {
 
                 this.sprite.animations.play('jump');
             }
+            if (this.hlth<=0) {
+                this.sprite.alpha = 0;
+            }
         }
         else{
 
@@ -305,6 +330,9 @@ class Player extends Phaser.Sprite {
                 jumpTimer = game.time.now + 650;
 
                 this.sprite.animations.play('jump');
+            }
+            if (this.hlth<=0) {
+                this.sprite.alpha = 0;
             }
 
         }
