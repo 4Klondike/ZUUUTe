@@ -11,23 +11,28 @@ var p2;
 
 var GameState = {
     preload: function() {
+        game.load.image('background', 'assets/background.png');
         // Load the spritesheet 'character.png', telling Phaser each frame is 40x64
         game.load.spritesheet('p1', 'assets/p1.png', 27, 24,6);
         game.load.spritesheet('p2', 'assets/p2.png', 27, 24,6);
-        game.load.image('background', 'assets/background.png');
+        
     },
     create: function() {
         // Make the background color of the game's stage be white (#FFFFFF)
         game.stage.backgroundColor = '#D3D3D3';
 
         // Start the physics system ARCADE
-        //game.physics.startSystem(Phaser.Physics.ARCADE);
+        game.physics.startSystem(Phaser.Physics.ARCADE);
 
         game.add.image(0,0,'background');
 
-        p1 = new Player(game, 500, 500, 'p1', 0);
-        p2 = new Player(game, 0, 0, 'p2', 0);
+        var facing1 = "left";
+        var facing2 = "left";
+
+        p1 = new Player(game, 250, 500, 'p1', 0, facing1);
+        p2 = new Player(game, 0, 0, 'p2', 0, facing2);
     },
+    // the update function is basically an infinite loop
     update: function() {
         p1.updatePLS();
         p2.updatePLS();
@@ -38,39 +43,46 @@ game.state.add('GameState', GameState);
 game.state.start('GameState');
 
 class Player extends Phaser.Sprite {
-    constructor(game, x, y, sprite, frame) {
+    constructor(game, x, y, sprite, frame, facing) {
 
         super(game, x, y, sprite, frame);
+        this.x = x;
+        this.y = y;
+        this.facing = facing;
 
-        game.physics.startSystem(Phaser.Physics.ARCADE);
+        //game.physics.startSystem(Phaser.Physics.ARCADE);
         //game.add.sprite(this);
 
         this.sprite = game.add.sprite(x, y, sprite);
+        //game.add.sprite(x, y, sprite);
 
 
-        game.physics.enable(this);
+        game.physics.enable(this.sprite);
         // We want the player to collide with the bounds of the world
-        this.body.collideWorldBounds = true;
+        this.sprite.body.collideWorldBounds = true;
 
         // Set the amount of gravity to apply to the physics body of the 'player' sprite
-        this.body.gravity.y =200;
+        this.sprite.body.gravity.y = 200;
+        console.log("hi");
     }
 
     updatePLS() {
 
-        this.body.velocity.x = 200;
+        this.sprite.body.velocity.x = 0;
         // Check if the left arrow key is being pressed
         if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
         {
             // Set the 'player' sprite's x velocity to a negative number:
             //  have it move left on the screen.
-            this.body.velocity.x = -hozMove;
+            this.sprite.body.velocity.x = -hozMove;
+
+            console.log("it works");
 
             // Check if 'facing' is not "left"
-            if (facing !== "left")
+            if (this.facing !== "left")
             {
                 // Set 'facing' to "left"
-                facing = "left";
+                this.facing = "left";
             }
         }
 
@@ -79,14 +91,14 @@ class Player extends Phaser.Sprite {
         {
             // Set the 'player' sprite's x velocity to a positive number:
             //  have it move right on the screen.
-            this.body.velocity.x = hozMove;
+            this.sprite.body.velocity.x = hozMove;
 
 
             // Check if 'facing' is not "right"
-            if (facing !== "right")
+            if (this.facing !== "right")
             {
                 // Set 'facing' to "right"
-                facing = "right";
+                this.facing = "right";
             }
         }
     
@@ -97,11 +109,11 @@ class Player extends Phaser.Sprite {
         //  (Here, we need to make sure the player cannot jump while alreay in the air
         //   AND that jumping takes place while the sprite is colliding with
         //   a tile in order to jump off it.)
-        if (game.input.keyboard.isDown(Phaser.Keyboard.UP) && this.body.onFloor() && game.time.now > jumpTimer)
+        if (game.input.keyboard.isDown(Phaser.Keyboard.UP) && this.sprite.body.onFloor() && game.time.now > jumpTimer)
         {
             // Set the 'player' sprite's y velocity to a negative number
             //  (vertMove is -90) and thus have it move up on the screen.
-            this.body.velocity.y = vertMove;
+            this.sprite.body.velocity.y = vertMove;
             // Add 650 and the current time together and set that value to 'jumpTimer'
             // (The 'jumpTimer' is how long in milliseconds between jumps.
             //   Here, that is 650 ms.)
