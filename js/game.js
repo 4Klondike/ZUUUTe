@@ -15,8 +15,8 @@
 
     function preload() {
         // Load the spritesheet 'character.png', telling Phaser each frame is 40x64
-        game.load.spritesheet('p1', 'assets/p1.png', 27, 24,6);
-        game.load.spritesheet('p2', 'assets/p2.png', 27, 24,6);
+        game.load.spritesheet('p1', 'assets/p1_large.png', 140, 120,6);
+        game.load.spritesheet('p2', 'assets/p2_large.png', 140, 120,6);
         game.load.image('background', 'assets/background.png');
 
 
@@ -52,11 +52,14 @@
 
         player1.animations.add('idle',[1,5],1,true);
         player1.animations.add('walk',[0,1,2,1],7,true);
-        player1.animations.add('swing',[1,5],1,true);
+        player1.animations.add('swing',[3,4],4,false);
+        player1.animations.add('jump',[3],1,true);
+
 
         player2.animations.add('idle',[1,5],1,true);
         player2.animations.add('walk',[0,1,2,1],7,true);
-        player2.animations.add('swing',[1,5],1,true);
+        player2.animations.add('swing',[3,4],4,false);
+        player2.animations.add('jump',[3],1,true);
 
         //player2 = game.add.sprite(500,500,'')
         
@@ -90,6 +93,7 @@
         player2.body.velocity.x = 0;
 
         // Check if the left arrow key is being pressed
+
         if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
         {
             // Set the 'player' sprite's x velocity to a negative number:
@@ -106,6 +110,9 @@
             player1.body.velocity.x = hozMove;
             player1.scale.setTo(1,1);
             player1.animations.play('walk');
+        } 
+        else if (game.input.keyboard.isDown(Phaser.Keyboard.J)) {
+            player1.animations.play('swing');
         }
         else if (player1.body.velocity.x == 0 && player1.body.velocity.y == 0) 
         {
@@ -127,10 +134,16 @@
             player2.scale.setTo(1,1);
             player2.animations.play('walk');
         }
+        else if(game.input.keyboard.isDown(Phaser.Keyboard.H)) 
+        {
+            player2.animations.play('swing');
+        }
         else if (player1.body.velocity.x == 0 && player1.body.velocity.y == 0) 
         {
             player2.animations.play('idle');
         }
+
+    
 
         // Check if the jumpButton (SPACEBAR) is down AND
         //  if the 'player' physics body is onFloor (touching a tile) AND
