@@ -15,8 +15,8 @@
 
     function preload() {
         // Load the spritesheet 'character.png', telling Phaser each frame is 40x64
-        game.load.spritesheet('p1', 'assets/p1.png', 160/6, 120,6);
-        game.load.spritesheet('p2', 'assets/p2.png', 160/6, 120,6);
+        game.load.spritesheet('p1', 'assets/p1.png', 27, 24,6);
+        game.load.spritesheet('p2', 'assets/p2.png', 27, 24,6);
         game.load.image('background', 'assets/background.png');
 
 
@@ -48,6 +48,16 @@
         // and using, in this case, the spritesheet 'character'
         player1 = game.add.sprite(500, 500, 'p1');
         player2 = game.add.sprite(0, 0, 'p2');
+
+
+        player1.animations.add('idle',[1,5],1,true);
+        player1.animations.add('walk',[0,1,2,1],7,true);
+        player1.animations.add('swing',[1,5],1,true);
+
+        player2.animations.add('idle',[1,5],1,true);
+        player2.animations.add('walk',[0,1,2,1],7,true);
+        player2.animations.add('swing',[1,5],1,true);
+
         //player2 = game.add.sprite(500,500,'')
         
         //player1.scale.setTo(0.5,0.5);
@@ -85,56 +95,41 @@
             // Set the 'player' sprite's x velocity to a negative number:
             //  have it move left on the screen.
             player1.body.velocity.x = -hozMove;
-
-            // Check if 'facing' is not "left"
-            if (facing !== "left")
-            {
-                // Set 'facing' to "left"
-                facing = "left";
-            }
+            player1.scale.setTo(-1,1);
+            player1.animations.play('walk');
         }
-
         // Check if the right arrow key is being pressed
         else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
         {
             // Set the 'player' sprite's x velocity to a positive number:
             //  have it move right on the screen.
             player1.body.velocity.x = hozMove;
-
-
-            // Check if 'facing' is not "right"
-            if (facing !== "right")
-            {
-                // Set 'facing' to "right"
-                facing = "right";
-            }
+            player1.scale.setTo(1,1);
+            player1.animations.play('walk');
+        }
+        else if (player1.body.velocity.x == 0 && player1.body.velocity.y == 0) 
+        {
+            player1.animations.play('idle');
         }
         if (game.input.keyboard.isDown(Phaser.Keyboard.A))
         {
             // Set the 'player' sprite's x velocity to a negative number:
             //  have it move left on the screen.
             player2.body.velocity.x = -hozMove;
-
-            // Check if 'facing' is not "left"
-            if (facing !== "left")
-            {
-                // Set 'facing' to "left"
-                facing = "left";
-            }
+            player2.scale.setTo(-1,1);
+            player2.animations.play('walk');
         }
         else if(game.input.keyboard.isDown(Phaser.Keyboard.D))
         {
             // Set the 'player' sprite's x velocity to a positive number:
             //  have it move right on the screen.
             player2.body.velocity.x = hozMove;
-
-
-            // Check if 'facing' is not "right"
-            if (facing !== "right")
-            {
-                // Set 'facing' to "right"
-                facing = "right";
-            }
+            player2.scale.setTo(1,1);
+            player2.animations.play('walk');
+        }
+        else if (player1.body.velocity.x == 0 && player1.body.velocity.y == 0) 
+        {
+            player2.animations.play('idle');
         }
 
         // Check if the jumpButton (SPACEBAR) is down AND
