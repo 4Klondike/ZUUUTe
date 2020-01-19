@@ -39,9 +39,13 @@ var GameState = {
 
         game.add.image(50,370, 'gnd');
 
-        healthempty = game.add.image(10,10, 'healthempty')
+        healthempty = game.add.image(85,30, 'healthempty')
         healthempty.scale.setTo(10,10)
-        healthbar = game.add.image(10,10, 'healthbar')
+        healthbar = game.add.image(85,30, 'healthbar')
+
+        healthempty2 = game.add.image(728,30, 'healthempty')
+        healthempty2.scale.setTo(10,10)
+        healthbar2 = game.add.image(728,30, 'healthbar')
 
 
         //plat = game.physics.add.staticGroup()
@@ -62,6 +66,7 @@ var GameState = {
     update: function() {
 
         healthbar.scale.setTo(4,10);
+        healthbar2.scale.setTo(4,10)
 
         p1.updatePLS();
         p2.updatePLS();
